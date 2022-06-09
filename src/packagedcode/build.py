@@ -89,8 +89,8 @@ class BaseStarlarkManifestHandler(models.DatafileHandler):
                 datafile_path=datafile_path,
             )
 
-            if not package.license_expression:
-                package.license_expression = compute_normalized_license(
+            if not package.declared_license_expression:
+                package.declared_license_expression = compute_normalized_license(
                     package=package,
                     resource=resource,
                     codebase=codebase,

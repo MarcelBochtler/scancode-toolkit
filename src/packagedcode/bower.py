@@ -27,7 +27,7 @@ class BowerJsonHandler(models.DatafileHandler):
 
     @classmethod
     def compute_normalized_license(cls, package):
-        return compute_bower_normalized_license(package.declared_license)
+        return compute_bower_normalized_license(package.extracted_license_statement)
 
     @classmethod
     def parse(cls, location):
@@ -39,14 +39,14 @@ class BowerJsonHandler(models.DatafileHandler):
 
         description = package_data.get('description')
         version = package_data.get('version')
-        declared_license = package_data.get('license')
-        if declared_license:
-            if isinstance(declared_license, str):
-                declared_license = [declared_license]
-            elif isinstance(declared_license, (list, tuple)):
-                declared_license = [l for l in declared_license if l and l.strip()]
+        extracted_license_statement = package_data.get('license')
+        if extracted_license_statement:
+            if isinstance(extracted_license_statement, str):
+                extracted_license_statement = [extracted_license_statement]
+            elif isinstance(extracted_license_statement, (list, tuple)):
+                extracted_license_statement = [l for l in extracted_license_statement if l and l.strip()]
             else:
-                declared_license = [repr(declared_license)]
+                extracted_license_statement = [repr(extracted_license_statement)]
 
         keywords = package_data.get('keywords') or []
 
@@ -106,7 +106,7 @@ class BowerJsonHandler(models.DatafileHandler):
             name=name,
             description=description,
             version=version,
-            declared_license=declared_license,
+            extracted_license_statement=extracted_license_statement,
             keywords=keywords,
             parties=parties,
             homepage_url=homepage_url,
@@ -115,18 +115,18 @@ class BowerJsonHandler(models.DatafileHandler):
         )
 
 
-def compute_bower_normalized_license(declared_license):
+def compute_bower_normalized_license(extracted_license_statement):
     """
     Return a normalized license expression string detected from a list of
     declared license strings.
     """
-    if not declared_license:
+    if not extracted_license_statement:
         return
 
     detected_licenses = []
 
-    for declared in declared_license:
-        detected_license = models.compute_normalized_license(declared)
+    for statement in extracted_license_statement:
+        detected_license = models.compute_normalized_license(statement)
         if detected_license:
             detected_licenses.append(detected_license)
         else:

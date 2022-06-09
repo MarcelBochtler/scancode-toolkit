@@ -20,6 +20,7 @@ from debian_inspector.copyright import CopyrightHeaderParagraph
 from debian_inspector.copyright import CopyrightFilesParagraph
 from license_expression import Licensing
 
+from packagedcode.licensing import get_declared_license_expression_spdx
 from packagedcode import debian_copyright
 from scancode_config import REGEN_TEST_FIXTURES
 
@@ -62,6 +63,12 @@ def check_expected_parse_copyright_file(
             simplify_licenses=simplify_licenses,
         )
 
+        license_detections = dc.get_license_detections_mapping()
+
+        declared_license_expression_spdx = get_declared_license_expression_spdx(
+            declared_license_expression=license_expression
+        )
+
         license_expression_keys = set(_licensing.license_keys(license_expression))
 
         copyrght = dc.get_copyright(
@@ -77,8 +84,9 @@ def check_expected_parse_copyright_file(
             'primary_license': primary_license,
             'declared_license': declared_license,
             'license_expression': license_expression,
+            'declared_license_expression_spdx': declared_license_expression_spdx,
             'copyright': copyrght,
-            'matches': match_details,
+            'license_detections': license_detections,
         }
 
         if regen:
@@ -246,7 +254,7 @@ class TestDebianDetector(FileBasedTesting):
     test_data_dir = path.join(path.dirname(__file__), 'data/debian/copyright/')
 
     def test_add_unknown_matches(self):
-        matches = debian_copyright.add_unknown_matches(name='foo', text='bar')
+        matches = debian_copyright.add_undetected_debian_matches(name='foo', text='bar')
         assert len(matches) == 1
         match = matches[0]
         assert match.matched_text() == 'foo\nbar'

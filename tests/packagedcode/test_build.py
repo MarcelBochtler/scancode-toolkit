@@ -90,7 +90,7 @@ class TestBuild(PackageTester):
                 type='github',
                 name='example',
                 version='0.0.1',
-                declared_license=['BSD-3-Clause'],
+                extracted_license_statement=['BSD-3-Clause'],
                 parties=[
                     models.Party(
                         type=models.party_org,
@@ -112,7 +112,7 @@ class TestBuild(PackageTester):
                 type='github',
                 name='example/example',
                 version='0.0.1',
-                declared_license='BSD-3-Clause',
+                extracted_license_statement='BSD-3-Clause',
                 parties=[
                     models.Party(
                         type=models.party_org,
